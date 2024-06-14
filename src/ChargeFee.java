@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
@@ -13,33 +14,54 @@ public class ChargeFee extends JFrame implements ActionListener {
         this.doctorUsername = doctorUsername;
         this.patientUsername = patientUsername;
 
-        // Initialize components
-        chargeLabel = new JLabel("Charge:");
-        chargeField = new JTextField(10);
-        submitButton = new JButton("Submit");
-        backButton = new JButton("Back");
-
-        // Set layout
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
-        // Add components to the panel
-        panel.add(chargeLabel);
-        panel.add(chargeField);
-        panel.add(submitButton);
-        panel.add(backButton);
-
-        // Add action listeners
-        submitButton.addActionListener(this);
-        backButton.addActionListener(this);
-
-        // Set the frame properties
+        // Setting the frame properties
         setTitle("Charge Fee");
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 150);
-        setLocationRelativeTo(null);
-        setResizable(false);
-        add(panel);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximizing the window
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Panel to hold the form elements
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Charge Fee Form"));
+        formPanel.setBackground(new Color(240, 248, 255)); // Light blue background
+
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // Adding form elements
+        chargeLabel = new JLabel("Charge:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        formPanel.add(chargeLabel, gbc);
+
+        chargeField = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        formPanel.add(chargeField, gbc);
+
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(this);
+        submitButton.setBackground(new Color(135, 206, 250)); // Sky blue background
+        submitButton.setForeground(Color.WHITE); // White text
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        formPanel.add(submitButton, gbc);
+
+        backButton = new JButton("Back");
+        backButton.addActionListener(this);
+        backButton.setBackground(new Color(255, 99, 71)); // Tomato background
+        backButton.setForeground(Color.WHITE); // White text
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        formPanel.add(backButton, gbc);
+
+        // Adding form panel to the frame
+        add(formPanel);
+
+        // Setting the frame visible
         setVisible(true);
     }
 
@@ -63,5 +85,22 @@ public class ChargeFee extends JFrame implements ActionListener {
             new HospitalHomepage();
             setVisible(false);
         }
+    }
+
+    public static void main(String[] args) {
+        // For testing purpose
+        new ChargeFee("doctor123", "patient456");
+    }
+}
+
+// HospitalHomepage class stub for testing
+class HospitalHomepage extends JFrame {
+    public HospitalHomepage() {
+        // Set the frame properties
+        setTitle("Hospital Homepage");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 }
