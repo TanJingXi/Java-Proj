@@ -18,6 +18,48 @@ public class DeletePatient extends JFrame implements ActionListener {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        // Menu bar setup
+        JMenuBar menuBar = new JMenuBar();
+        JMenu adminMenu = new JMenu("Admin Options");
+
+        JMenuItem deletePatientItem = new JMenuItem("Delete Patient");
+        deletePatientItem.addActionListener(e -> {
+            dispose();
+            new DeletePatient();
+        });
+        adminMenu.add(deletePatientItem);
+
+        JMenuItem deleteDoctorItem = new JMenuItem("Delete Doctor");
+        deleteDoctorItem.addActionListener(e -> {
+            dispose();
+            new DeleteDoctor();
+        });
+        adminMenu.add(deleteDoctorItem);
+
+        JMenuItem updateDoctorItem = new JMenuItem("Update Doctor");
+        updateDoctorItem.addActionListener(e -> {
+            dispose();
+            new UpdateDoctor();
+        });
+        adminMenu.add(updateDoctorItem);
+
+        JMenuItem updatePatientItem = new JMenuItem("Update Patient");
+        updatePatientItem.addActionListener(e -> {
+            dispose();
+            new UpdatePatient();
+        });
+        adminMenu.add(updatePatientItem);
+
+        JMenuItem backItem = new JMenuItem("Back");
+        backItem.addActionListener(e -> {
+            dispose();
+            new AdminPage();
+        });
+        adminMenu.add(backItem);
+
+        menuBar.add(adminMenu);
+        setJMenuBar(menuBar);
+
         // Panel to hold the form elements
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createTitledBorder("Delete Patient Form"));
@@ -42,6 +84,11 @@ public class DeletePatient extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 String patientUsername = usernameField.getText().trim();
 
+                if (patientUsername.isEmpty()) {
+                    JOptionPane.showMessageDialog(DeletePatient.this, "Please enter a valid username.");
+                    return;
+                }
+
                 try {
                     File inputFile = new File("Patient.txt");
                     File tempFile = new File("temp.txt");
@@ -49,6 +96,7 @@ public class DeletePatient extends JFrame implements ActionListener {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
                     String line;
                     boolean deleted = false;
+
                     while ((line = reader.readLine()) != null) {
                         String[] data = line.split(",");
                         if (data[4].equals(patientUsername)) {
@@ -59,6 +107,7 @@ public class DeletePatient extends JFrame implements ActionListener {
                     }
                     reader.close();
                     writer.close();
+
                     if (!deleted) {
                         JOptionPane.showMessageDialog(DeletePatient.this, "Patient not found.");
                     } else {

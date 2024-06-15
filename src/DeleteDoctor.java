@@ -17,6 +17,48 @@ public class DeleteDoctor extends JFrame implements ActionListener {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        // Menu bar setup
+        JMenuBar menuBar = new JMenuBar();
+        JMenu adminMenu = new JMenu("Admin Options");
+
+        JMenuItem deletePatientItem = new JMenuItem("Delete Patient");
+        deletePatientItem.addActionListener(e -> {
+            dispose();
+            new DeletePatient();
+        });
+        adminMenu.add(deletePatientItem);
+
+        JMenuItem deleteDoctorItem = new JMenuItem("Delete Doctor");
+        deleteDoctorItem.addActionListener(e -> {
+            dispose();
+            new DeleteDoctor();
+        });
+        adminMenu.add(deleteDoctorItem);
+
+        JMenuItem updateDoctorItem = new JMenuItem("Update Doctor");
+        updateDoctorItem.addActionListener(e -> {
+            dispose();
+            new UpdateDoctor();
+        });
+        adminMenu.add(updateDoctorItem);
+
+        JMenuItem updatePatientItem = new JMenuItem("Update Patient");
+        updatePatientItem.addActionListener(e -> {
+            dispose();
+            new UpdatePatient();
+        });
+        adminMenu.add(updatePatientItem);
+
+        JMenuItem backItem = new JMenuItem("Back");
+        backItem.addActionListener(e -> {
+            dispose();
+            new AdminPage();
+        });
+        adminMenu.add(backItem);
+
+        menuBar.add(adminMenu);
+        setJMenuBar(menuBar);
+
         // Panel to hold the form elements
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createTitledBorder("Delete Doctor Form"));
