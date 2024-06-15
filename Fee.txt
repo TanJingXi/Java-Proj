@@ -1,1 +1,2 @@
 TAN,SAM,60
+TAN,SAM,50
