@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.io.*;
 
 public class AdminSignIn extends JFrame implements ActionListener {
-    private JLabel userLabel, passwordLabel, messageLabel;
+    private JLabel userLabel, passwordLabel, messageLabel, imageLabel;
     private JTextField userField;
     private JPasswordField passwordField;
     private JButton loginButton, backButton;
@@ -64,6 +64,18 @@ public class AdminSignIn extends JFrame implements ActionListener {
         backButton = createButton("Back", this);
         gbc.anchor = GridBagConstraints.WEST;
         formPanel.add(backButton, gbc);
+
+        // Load the image and resize it
+        ImageIcon originalIcon = new ImageIcon("img/admin.png"); // Replace "admin.png" with the path to your image file
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize to 100x100 pixels
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+        imageLabel = new JLabel(resizedIcon);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2; // Span across two columns
+        gbc.anchor = GridBagConstraints.CENTER;
+        formPanel.add(imageLabel, gbc);
 
         // Adding form panel to the frame
         add(formPanel);

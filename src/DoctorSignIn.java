@@ -9,6 +9,7 @@ public class DoctorSignIn extends JFrame implements ActionListener {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton signInButton, backButton;
+    private JLabel imageLabel; // Declare image label
 
     public DoctorSignIn() {
         super("Doctor Sign In");
@@ -67,6 +68,18 @@ public class DoctorSignIn extends JFrame implements ActionListener {
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         formPanel.add(backButton, gbc);
+
+        // Load the image and resize it
+        ImageIcon originalIcon = new ImageIcon("img/doctor.png"); // Replace "doctor.png" with the path to your image file
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize to 100x100 pixels
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+        imageLabel = new JLabel(resizedIcon);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2; // Span across two columns
+        gbc.anchor = GridBagConstraints.CENTER;
+        formPanel.add(imageLabel, gbc);
 
         // Adding form panel to the frame
         add(formPanel);
