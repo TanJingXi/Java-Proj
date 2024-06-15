@@ -2,29 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/PatientRegistration.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/DeleteDoctor.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/DoctorSignIn.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/PayBill.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/Doctor.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/Patient.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/BookAppointment.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/AdminSignIn.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/PatientMedicine.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/AdminRegistration.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/DoctorRegistration.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/PatientPage.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/SeeAppointment.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/DeletePatient.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/UpdatePatient.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/DoctorPage.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/WriteMedicine.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/UpdateDoctor.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/AdminPage.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/HospitalHomepage.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/PatientSignIn.java</file>
-            <file>file:/C:/Users/USER/Documents/NetBeansProjects/DPJ%20Project/src/ChargeFee.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
