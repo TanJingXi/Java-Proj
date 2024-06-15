@@ -4,15 +4,12 @@ import java.awt.event.*;
 import java.io.*;
 
 public class AdminRegistration extends JFrame implements ActionListener {
-
-    private JLabel nameLabel, ageLabel, userLabel, passLabel;
-    private JTextField nameField, ageField, userField;
-    private JPasswordField passField;
-    private JButton submitButton, backButton;
+    private JLabel nameLabel, ageLabel, usernameLabel, passwordLabel;
+    private JTextField nameTextField, ageTextField, usernameTextField;
+    private JPasswordField passwordField;
+    private JButton registerButton, backButton;
 
     public AdminRegistration() {
-        super("Admin Registration");
-
         // Setting the frame properties
         setTitle("Admin Registration");
         setSize(600, 400);
@@ -35,10 +32,10 @@ public class AdminRegistration extends JFrame implements ActionListener {
         gbc.anchor = GridBagConstraints.EAST;
         formPanel.add(nameLabel, gbc);
 
-        nameField = new JTextField(20);
+        nameTextField = new JTextField(20);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(nameField, gbc);
+        formPanel.add(nameTextField, gbc);
 
         ageLabel = new JLabel("Age:");
         gbc.gridx = 0;
@@ -46,41 +43,41 @@ public class AdminRegistration extends JFrame implements ActionListener {
         gbc.anchor = GridBagConstraints.EAST;
         formPanel.add(ageLabel, gbc);
 
-        ageField = new JTextField(20);
+        ageTextField = new JTextField(20);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(ageField, gbc);
+        formPanel.add(ageTextField, gbc);
 
-        userLabel = new JLabel("Username:");
+        usernameLabel = new JLabel("Username:");
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
-        formPanel.add(userLabel, gbc);
+        formPanel.add(usernameLabel, gbc);
 
-        userField = new JTextField(20);
+        usernameTextField = new JTextField(20);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(userField, gbc);
+        formPanel.add(usernameTextField, gbc);
 
-        passLabel = new JLabel("Password:");
+        passwordLabel = new JLabel("Password:");
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.EAST;
-        formPanel.add(passLabel, gbc);
+        formPanel.add(passwordLabel, gbc);
 
-        passField = new JPasswordField(20);
+        passwordField = new JPasswordField(20);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(passField, gbc);
+        formPanel.add(passwordField, gbc);
 
-        submitButton = new JButton("Submit");
-        submitButton.addActionListener(this);
-        submitButton.setBackground(new Color(135, 206, 250)); // Sky blue background
-        submitButton.setForeground(Color.WHITE); // White text
+        registerButton = new JButton("Register");
+        registerButton.addActionListener(this);
+        registerButton.setBackground(new Color(135, 206, 250)); // Sky blue background
+        registerButton.setForeground(Color.WHITE); // White text
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(submitButton, gbc);
+        formPanel.add(registerButton, gbc);
 
         backButton = new JButton("Back");
         backButton.addActionListener(this);
@@ -97,19 +94,21 @@ public class AdminRegistration extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    // Action performed when a button is clicked
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == submitButton) {
-            String name = nameField.getText();
+        if (e.getSource() == registerButton) {
+            String name = nameTextField.getText();
             int age;
             try {
-                age = Integer.parseInt(ageField.getText());
+                age = Integer.parseInt(ageTextField.getText());
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Please enter a valid age.", "Invalid Age", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            String username = userField.getText();
-            String password = new String(passField.getPassword());
+            String username = usernameTextField.getText();
+            String password = new String(passwordField.getPassword());
 
+            // Writing admin information to file
             try (PrintWriter writer = new PrintWriter(new FileWriter("Admin.txt", true))) {
                 writer.println(name + "," + age + "," + username + "," + password);
                 JOptionPane.showMessageDialog(this, "Admin registered successfully!");
@@ -118,10 +117,10 @@ public class AdminRegistration extends JFrame implements ActionListener {
             }
 
             // Clearing input fields
-            nameField.setText("");
-            ageField.setText("");
-            userField.setText("");
-            passField.setText("");
+            nameTextField.setText("");
+            ageTextField.setText("");
+            usernameTextField.setText("");
+            passwordField.setText("");
         } else if (e.getSource() == backButton) {
             new HospitalHomepage();
             dispose();
