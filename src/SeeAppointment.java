@@ -40,7 +40,7 @@ public class SeeAppointment extends JFrame {
         while ((line = reader.readLine()) != null) {
             String[] appointment = line.split(",");
             if (appointment[0].equals(doctorUsername)) {
-                appointmentList.append("- " + appointment[1] + "\n");
+                appointmentList.append("- Patient: " + appointment[1] + ", Date: " + appointment[2] + ", Time: " + appointment[3] + "\n");
             }
         }
 

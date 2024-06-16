@@ -31,7 +31,7 @@ public class PayBill extends JFrame implements ActionListener {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         // Adding fee label
-        feeLabel = new JLabel("Fee: " + getFee());
+        feeLabel = new JLabel("Fee: RM " + getFee());
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;

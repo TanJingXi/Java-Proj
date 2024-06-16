@@ -1,19 +1,23 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import com.toedter.calendar.JDateChooser;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class WriteMedicine extends JFrame implements ActionListener {
-    private JLabel patientUsernameLabel, diseaseLabel, medicine1Label, medicine2Label, medicine3Label;
+    private JLabel patientUsernameLabel, diseaseLabel, medicine1Label, medicine2Label, medicine3Label, dateLabel;
     private JTextField diseaseField, medicine1Field, medicine2Field, medicine3Field;
     private JButton saveButton, backButton;
     private JTable patientTable;
     private DefaultTableModel tableModel;
     private String doctorUsername;
     private List<Patient> patientList;
+    private JDateChooser dateChooser;
 
     public WriteMedicine(String doctorUsername) {
         this.doctorUsername = doctorUsername;
@@ -95,12 +99,25 @@ public class WriteMedicine extends JFrame implements ActionListener {
         gbc.anchor = GridBagConstraints.WEST;
         formPanel.add(medicine3Field, gbc);
 
+        dateLabel = new JLabel("Date:");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.EAST;
+        formPanel.add(dateLabel, gbc);
+
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("yyyy-MM-dd");
+        dateChooser.setDate(new Date()); // Set today's date as the default date
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        formPanel.add(dateChooser, gbc);
+
         saveButton = new JButton("Save");
         saveButton.addActionListener(this);
         saveButton.setBackground(new Color(135, 206, 250)); // Sky blue background
         saveButton.setForeground(Color.WHITE); // White text
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.anchor = GridBagConstraints.CENTER;
         formPanel.add(saveButton, gbc);
 
@@ -160,7 +177,9 @@ public class WriteMedicine extends JFrame implements ActionListener {
             String medicine1 = medicine1Field.getText();
             String medicine2 = medicine2Field.getText();
             String medicine3 = medicine3Field.getText();
-            String medicineData = doctorUsername + "," + patientUsername + "," + disease + "," + medicine1 + "," + medicine2 + "," + medicine3 + "\n";
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String date = sdf.format(dateChooser.getDate());
+            String medicineData = doctorUsername + "," + patientUsername + "," + disease + "," + medicine1 + "," + medicine2 + "," + medicine3 + "," + date + "\n";
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter("Medicine.txt", true));
                 writer.write(medicineData);

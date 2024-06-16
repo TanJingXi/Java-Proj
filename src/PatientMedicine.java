@@ -51,6 +51,7 @@ public class PatientMedicine extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(backButton, gbc);
 
+        // Read and display medicine information from the file
         try {
             File file = new File("Medicine.txt");
             if (file.exists()) {
@@ -63,7 +64,8 @@ public class PatientMedicine extends JFrame {
                         medicineArea.append("Disease: " + medicineInfo[2] + "\n");
                         medicineArea.append("Medicine 1: " + medicineInfo[3] + "\n");
                         medicineArea.append("Medicine 2: " + medicineInfo[4] + "\n");
-                        medicineArea.append("Medicine 3: " + medicineInfo[5] + "\n\n");
+                        medicineArea.append("Medicine 3: " + medicineInfo[5] + "\n");
+                        medicineArea.append("Date: " + medicineInfo[6] + "\n\n");
                     }
                     line = reader.readLine();
                 }
@@ -79,5 +81,9 @@ public class PatientMedicine extends JFrame {
         // Setting the frame visible
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new PatientMedicine("patientUsername");
     }
 }
