@@ -5,29 +5,49 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class DeletePatient extends JFrame implements ActionListener {
+public class ViewPatients extends JFrame implements ActionListener {
     private JTable patientTable;
-    private JButton deleteButton, backButton;
+    private JTextField searchField;
+    private JComboBox<String> filterComboBox;
+    private JButton backButton;
     private List<Patient> patientList;
     private DefaultTableModel tableModel;
 
-    public DeletePatient() {
-        setTitle("Delete Patient");
+    public ViewPatients() {
+        // Read all the files first
+        patientList = loadPatients();
+
+        // Set up the JFrame
+        setTitle("View Patients");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // Load patients from the file
-        patientList = loadPatients();
-
         // Panel to hold form elements
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createTitledBorder("Delete Patient"));
+        formPanel.setBorder(BorderFactory.createTitledBorder("View Patients"));
         formPanel.setBackground(new Color(240, 248, 255));
 
         gbc.insets = new Insets(10, 10, 10, 10);
+
+        // Adding search bar and filter options
+        JLabel searchLabel = new JLabel("Search:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(searchLabel, gbc);
+
+        searchField = new JTextField(20);
+        searchField.addActionListener(this);
+        gbc.gridx = 1;
+        formPanel.add(searchField, gbc);
+
+        String[] filterOptions = {"Name", "Username", "Blood Group", "Gender"};
+        filterComboBox = new JComboBox<>(filterOptions);
+        gbc.gridx = 2;
+        formPanel.add(filterComboBox, gbc);
 
         // Adding patient table
         String[] columnNames = {"Name", "Age", "Blood Group", "Gender", "Username"};
@@ -36,30 +56,22 @@ public class DeletePatient extends JFrame implements ActionListener {
         patientTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // Populate the table with patient data
-        loadPatientTable();
+        loadPatientTable(patientList);
 
         JScrollPane scrollPane = new JScrollPane(patientTable);
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.gridy = 1;
+        gbc.gridwidth = 3;
         gbc.fill = GridBagConstraints.BOTH;
         formPanel.add(scrollPane, gbc);
-
-        deleteButton = new JButton("Delete Patient");
-        deleteButton.addActionListener(this);
-        deleteButton.setBackground(new Color(255, 99, 71));
-        deleteButton.setForeground(Color.WHITE);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(deleteButton, gbc);
 
         backButton = new JButton("Back to Admin Page");
         backButton.addActionListener(this);
         backButton.setBackground(new Color(135, 206, 250));
         backButton.setForeground(Color.WHITE);
         gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         formPanel.add(backButton, gbc);
 
@@ -85,27 +97,37 @@ public class DeletePatient extends JFrame implements ActionListener {
         return patients;
     }
 
-    private void loadPatientTable() {
-        for (Patient patient : patientList) {
+    private void loadPatientTable(List<Patient> patients) {
+        tableModel.setRowCount(0);
+        for (Patient patient : patients) {
             Object[] row = {patient.getName(), patient.getAge(), patient.getBloodGroup(), patient.getGender(), patient.getUsername()};
             tableModel.addRow(row);
         }
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == deleteButton) {
-            int selectedRow = patientTable.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Please select a patient from the table");
-                return;
-            }
+        if (e.getSource() == searchField) {
+            String searchText = searchField.getText().toLowerCase();
+            String filterOption = (String) filterComboBox.getSelectedItem();
 
-            String username = (String) tableModel.getValueAt(selectedRow, 4);
-            deletePatient(username);
-            tableModel.removeRow(selectedRow);
+            List<Patient> filteredPatients = patientList.stream()
+                    .filter(patient -> {
+                        switch (filterOption) {
+                            case "Name":
+                                return patient.getName().toLowerCase().contains(searchText);
+                            case "Username":
+                                return patient.getUsername().toLowerCase().contains(searchText);
+                            case "Blood Group":
+                                return patient.getBloodGroup().toLowerCase().contains(searchText);
+                            case "Gender":
+                                return patient.getGender().toLowerCase().contains(searchText);
+                            default:
+                                return false;
+                        }
+                    })
+                    .collect(Collectors.toList());
 
-            JOptionPane.showMessageDialog(this, "Patient deleted successfully");
-
+            loadPatientTable(filteredPatients);
         } else if (e.getSource() == backButton) {
             // Go back to admin page
             new AdminPage();
@@ -113,24 +135,7 @@ public class DeletePatient extends JFrame implements ActionListener {
         }
     }
 
-    private void deletePatient(String username) {
-        patientList.removeIf(patient -> patient.getUsername().equals(username));
-        savePatients();
-    }
-
-    private void savePatients() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Patient.txt"))) {
-            for (Patient patient : patientList) {
-                writer.write(patient.getName() + "," + patient.getAge() + "," + patient.getBloodGroup() + "," + patient.getGender() + "," + patient.getUsername() + "," + patient.getPassword());
-                writer.newLine();
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error saving patients: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        new DeletePatient();
+        new ViewPatients();
     }
 }

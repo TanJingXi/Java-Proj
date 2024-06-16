@@ -5,29 +5,49 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class DeleteDoctor extends JFrame implements ActionListener {
+public class ViewDoctors extends JFrame implements ActionListener {
     private JTable doctorTable;
-    private JButton deleteButton, backButton;
+    private JTextField searchField;
+    private JComboBox<String> filterComboBox;
+    private JButton backButton;
     private List<Doctor> doctorList;
     private DefaultTableModel tableModel;
 
-    public DeleteDoctor() {
-        setTitle("Delete Doctor");
+    public ViewDoctors() {
+        // Read all the files first
+        doctorList = loadDoctors();
+
+        // Set up the JFrame
+        setTitle("View Doctors");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // Load doctors from the file
-        doctorList = loadDoctors();
-
         // Panel to hold form elements
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createTitledBorder("Delete Doctor"));
+        formPanel.setBorder(BorderFactory.createTitledBorder("View Doctors"));
         formPanel.setBackground(new Color(240, 248, 255));
 
         gbc.insets = new Insets(10, 10, 10, 10);
+
+        // Adding search bar and filter options
+        JLabel searchLabel = new JLabel("Search:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(searchLabel, gbc);
+
+        searchField = new JTextField(20);
+        searchField.addActionListener(this);
+        gbc.gridx = 1;
+        formPanel.add(searchField, gbc);
+
+        String[] filterOptions = {"Name", "Username", "Gender", "Qualification"};
+        filterComboBox = new JComboBox<>(filterOptions);
+        gbc.gridx = 2;
+        formPanel.add(filterComboBox, gbc);
 
         // Adding doctor table
         String[] columnNames = {"Name", "Age", "Qualification", "Gender", "Username"};
@@ -36,30 +56,22 @@ public class DeleteDoctor extends JFrame implements ActionListener {
         doctorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // Populate the table with doctor data
-        loadDoctorTable();
+        loadDoctorTable(doctorList);
 
         JScrollPane scrollPane = new JScrollPane(doctorTable);
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.gridy = 1;
+        gbc.gridwidth = 3;
         gbc.fill = GridBagConstraints.BOTH;
         formPanel.add(scrollPane, gbc);
-
-        deleteButton = new JButton("Delete Doctor");
-        deleteButton.addActionListener(this);
-        deleteButton.setBackground(new Color(255, 99, 71));
-        deleteButton.setForeground(Color.WHITE);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(deleteButton, gbc);
 
         backButton = new JButton("Back to Admin Page");
         backButton.addActionListener(this);
         backButton.setBackground(new Color(135, 206, 250));
         backButton.setForeground(Color.WHITE);
         gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         formPanel.add(backButton, gbc);
 
@@ -85,27 +97,37 @@ public class DeleteDoctor extends JFrame implements ActionListener {
         return doctors;
     }
 
-    private void loadDoctorTable() {
-        for (Doctor doctor : doctorList) {
+    private void loadDoctorTable(List<Doctor> doctors) {
+        tableModel.setRowCount(0);
+        for (Doctor doctor : doctors) {
             Object[] row = {doctor.getName(), doctor.getAge(), doctor.getQualification(), doctor.getGender(), doctor.getUsername()};
             tableModel.addRow(row);
         }
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == deleteButton) {
-            int selectedRow = doctorTable.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Please select a doctor from the table");
-                return;
-            }
+        if (e.getSource() == searchField) {
+            String searchText = searchField.getText().toLowerCase();
+            String filterOption = (String) filterComboBox.getSelectedItem();
 
-            String username = (String) tableModel.getValueAt(selectedRow, 4);
-            deleteDoctor(username);
-            tableModel.removeRow(selectedRow);
+            List<Doctor> filteredDoctors = doctorList.stream()
+                    .filter(doctor -> {
+                        switch (filterOption) {
+                            case "Name":
+                                return doctor.getName().toLowerCase().contains(searchText);
+                            case "Username":
+                                return doctor.getUsername().toLowerCase().contains(searchText);
+                            case "Gender":
+                                return doctor.getGender().toLowerCase().contains(searchText);
+                            case "Qualification":
+                                return doctor.getQualification().toLowerCase().contains(searchText);
+                            default:
+                                return false;
+                        }
+                    })
+                    .collect(Collectors.toList());
 
-            JOptionPane.showMessageDialog(this, "Doctor deleted successfully");
-
+            loadDoctorTable(filteredDoctors);
         } else if (e.getSource() == backButton) {
             // Go back to admin page
             new AdminPage();
@@ -113,24 +135,7 @@ public class DeleteDoctor extends JFrame implements ActionListener {
         }
     }
 
-    private void deleteDoctor(String username) {
-        doctorList.removeIf(doctor -> doctor.getUsername().equals(username));
-        saveDoctors();
-    }
-
-    private void saveDoctors() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Doctor.txt"))) {
-            for (Doctor doctor : doctorList) {
-                writer.write(doctor.getName() + "," + doctor.getAge() + "," + doctor.getQualification() + "," + doctor.getGender() + "," + doctor.getUsername() + "," + doctor.getPassword());
-                writer.newLine();
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error saving doctors: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        new DeleteDoctor();
+        new ViewDoctors();
     }
 }
