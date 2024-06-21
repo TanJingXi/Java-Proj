@@ -78,13 +78,32 @@ public class AdminPage extends JFrame {
         gbc.gridy = 5;
         panel.add(viewPatientsButton, gbc);
 
+        JButton viewAppointmentsButton = createButton("View Appointments", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new ViewAllAppointments();
+            }
+        });
+        gbc.gridy = 6;
+        panel.add(viewAppointmentsButton, gbc);
+
+        // Adding new button to view all medicines
+        JButton viewMedicinesButton = createButton("View Medicines", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new ViewMedicine();
+            }
+        });
+        gbc.gridy = 7;
+        panel.add(viewMedicinesButton, gbc);
+
         JButton backButton = createButton("Back", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current window
                 new HospitalHomepage(); // Open the HospitalHomepage
             }
         });
-        gbc.gridy = 6;
+        gbc.gridy = 8;
         panel.add(backButton, gbc);
 
         // Adding the panel to the frame
