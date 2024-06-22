@@ -186,20 +186,57 @@ public class UpdateDoctor extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == updateButton) {
             if (selectedDoctor != null) {
-                selectedDoctor.setName(nameTextField.getText());
-                selectedDoctor.setAge(Integer.parseInt(ageTextField.getText()));
-                selectedDoctor.setQualification(qualificationTextField.getText());
-                selectedDoctor.setGender(maleRadioButton.isSelected() ? "Male" : "Female");
-                selectedDoctor.setUsername(usernameTextField.getText());
-                selectedDoctor.setPassword(new String(passwordField.getPassword()));
+                if (validateFields()) {
+                    selectedDoctor.setName(nameTextField.getText());
+                    selectedDoctor.setAge(Integer.parseInt(ageTextField.getText()));
+                    selectedDoctor.setQualification(qualificationTextField.getText());
+                    selectedDoctor.setGender(maleRadioButton.isSelected() ? "Male" : "Female");
+                    selectedDoctor.setUsername(usernameTextField.getText());
+                    selectedDoctor.setPassword(new String(passwordField.getPassword()));
 
-                saveDoctors();
-                JOptionPane.showMessageDialog(this, "Doctor information updated successfully!");
+                    saveDoctors();
+                    JOptionPane.showMessageDialog(this, "Doctor information updated successfully!");
+                }
             }
         } else if (e.getSource() == backButton) {
             new AdminPage();
             dispose();
         }
+    }
+
+    private boolean validateFields() {
+        String name = nameTextField.getText().trim();
+        String qualification = qualificationTextField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+
+        if (!name.matches("[a-zA-Z ]+")) {
+            JOptionPane.showMessageDialog(this, "Name must contain only alphabetic characters.");
+            return false;
+        }
+
+        if (!qualification.matches("[a-zA-Z ]+")) {
+            JOptionPane.showMessageDialog(this, "Qualification must contain only alphabetic characters.");
+            return false;
+        }
+
+        if (!isStrongPassword(password)) {
+            JOptionPane.showMessageDialog(this, "Password is too weak. It must be at least 8 characters long and contain a mix of upper and lower case letters, numbers, and special characters.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isStrongPassword(String password) {
+        if (password.length() < 8) return false;
+        boolean hasUpper = false, hasLower = false, hasDigit = false, hasSpecial = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) hasUpper = true;
+            if (Character.isLowerCase(c)) hasLower = true;
+            if (Character.isDigit(c)) hasDigit = true;
+            if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        return hasUpper && hasLower && hasDigit && hasSpecial;
     }
 
     private void saveDoctors() {

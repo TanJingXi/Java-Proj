@@ -46,8 +46,4 @@ public class SeeAppointment extends JFrame {
 
         reader.close();
     }
-
-    public static void main(String[] args) {
-        new SeeAppointment("doctorUsername");
-    }
 }

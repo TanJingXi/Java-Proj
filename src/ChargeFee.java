@@ -70,6 +70,8 @@ public class ChargeFee extends JFrame implements ActionListener {
             String charge = chargeField.getText();
             if (charge.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter the charge.");
+            } else if (!charge.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid numeric charge.");
             } else {
                 // Write the fee information to the file
                 try {
@@ -85,11 +87,6 @@ public class ChargeFee extends JFrame implements ActionListener {
             new HospitalHomepage();
             setVisible(false);
         }
-    }
-
-    public static void main(String[] args) {
-        // For testing purpose
-        new ChargeFee("doctor123", "patient456");
     }
 }
 

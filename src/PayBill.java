@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class PayBill extends JFrame implements ActionListener {
@@ -31,7 +34,7 @@ public class PayBill extends JFrame implements ActionListener {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         // Adding fee label
-        feeLabel = new JLabel("Fee: RM " + getFee());
+        feeLabel = new JLabel("Total Fee: RM " + getTotalFee());
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -101,9 +104,9 @@ public class PayBill extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    // Helper method to retrieve the fee from the file
-    private String getFee() {
-        String fee = "N/A";
+    // Helper method to retrieve the total fee from the file
+    private String getTotalFee() {
+        double totalFee = 0.0;
         try {
             File file = new File("Fee.txt");
             Scanner scanner = new Scanner(file);
@@ -111,15 +114,16 @@ public class PayBill extends JFrame implements ActionListener {
                 String line = scanner.nextLine();
                 String[] tokens = line.split(",");
                 if (tokens[1].equals(patientUsername)) {
-                    fee = tokens[2];
-                    break;
+                    totalFee += Double.parseDouble(tokens[2]);
                 }
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
-        return fee;
+        return String.format("%.2f", totalFee);
     }
 
     // Helper method to remove the fee information from the file
@@ -158,14 +162,40 @@ public class PayBill extends JFrame implements ActionListener {
                 return;
             }
 
-            // Add further validation if necessary (e.g., format, length)
+            if (!cardNumber.matches("\\d{16}")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid 16-digit card number");
+                return;
+            }
+
+            if (!expiryDate.matches("(0[1-9]|1[0-2])/\\d{2}")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid expiry date in MM/YY format");
+                return;
+            }
+
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/yy");
+                sdf.setLenient(false);
+                Date expDate = sdf.parse(expiryDate);
+                if (expDate.before(new Date())) {
+                    JOptionPane.showMessageDialog(this, "The card is expired");
+                    return;
+                }
+            } catch (ParseException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid date format");
+                return;
+            }
+
+            if (!cvv.matches("\\d{3}")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid 3-digit CVV");
+                return;
+            }
 
             // Process payment (for now, we assume the payment is successful)
             // Remove the fee information from the file
             removeFee();
 
             // Update the fee label
-            feeLabel.setText("Fee: " + getFee());
+            feeLabel.setText("Total Fee: RM " + getTotalFee());
 
             // Show a message dialog to confirm payment
             JOptionPane.showMessageDialog(this, "Payment successful!");
@@ -175,10 +205,5 @@ public class PayBill extends JFrame implements ActionListener {
             new PatientPage(patientUsername);
             dispose();
         }
-    }
-
-    public static void main(String[] args) {
-        // Example usage
-        new PayBill("JohnDoe");
     }
 }

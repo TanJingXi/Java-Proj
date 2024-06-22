@@ -190,11 +190,6 @@ public class BookAppointment extends JFrame implements ActionListener {
         }
         return true;
     }
-
-    public static void main(String[] args) {
-        // Example usage
-        new BookAppointment("JohnDoe");
-    }
 }
 
 class Doctor {

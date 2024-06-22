@@ -7,7 +7,8 @@ import java.util.List;
 
 public class UpdatePatient extends JFrame implements ActionListener {
     private JLabel nameLabel, ageLabel, bloodGroupLabel, genderLabel, usernameLabel, passwordLabel;
-    private JTextField nameTextField, ageTextField, bloodGroupTextField, usernameTextField;
+    private JTextField nameTextField, ageTextField, usernameTextField;
+    private JComboBox<String> bloodGroupComboBox;
     private JRadioButton maleRadioButton, femaleRadioButton;
     private ButtonGroup genderButtonGroup;
     private JPasswordField passwordField;
@@ -83,10 +84,10 @@ public class UpdatePatient extends JFrame implements ActionListener {
         gbc.anchor = GridBagConstraints.EAST;
         formPanel.add(bloodGroupLabel, gbc);
 
-        bloodGroupTextField = new JTextField(20);
+        bloodGroupComboBox = new JComboBox<>(new String[]{"A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"});
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(bloodGroupTextField, gbc);
+        formPanel.add(bloodGroupComboBox, gbc);
 
         genderLabel = new JLabel("Gender:");
         gbc.gridx = 0;
@@ -173,7 +174,7 @@ public class UpdatePatient extends JFrame implements ActionListener {
     private void loadPatientData(Patient patient) {
         nameTextField.setText(patient.getName());
         ageTextField.setText(String.valueOf(patient.getAge()));
-        bloodGroupTextField.setText(patient.getBloodGroup());
+        bloodGroupComboBox.setSelectedItem(patient.getBloodGroup());
         if (patient.getGender().equals("Male")) {
             maleRadioButton.setSelected(true);
         } else {
@@ -186,20 +187,57 @@ public class UpdatePatient extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == updateButton) {
             if (selectedPatient != null) {
-                selectedPatient.setName(nameTextField.getText());
-                selectedPatient.setAge(Integer.parseInt(ageTextField.getText()));
-                selectedPatient.setBloodGroup(bloodGroupTextField.getText());
-                selectedPatient.setGender(maleRadioButton.isSelected() ? "Male" : "Female");
-                selectedPatient.setUsername(usernameTextField.getText());
-                selectedPatient.setPassword(new String(passwordField.getPassword()));
+                if (validateFields()) {
+                    selectedPatient.setName(nameTextField.getText());
+                    selectedPatient.setAge(Integer.parseInt(ageTextField.getText()));
+                    selectedPatient.setBloodGroup((String) bloodGroupComboBox.getSelectedItem());
+                    selectedPatient.setGender(maleRadioButton.isSelected() ? "Male" : "Female");
+                    selectedPatient.setUsername(usernameTextField.getText());
+                    selectedPatient.setPassword(new String(passwordField.getPassword()));
 
-                savePatients();
-                JOptionPane.showMessageDialog(this, "Patient information updated successfully!");
+                    savePatients();
+                    JOptionPane.showMessageDialog(this, "Patient information updated successfully!");
+                }
             }
         } else if (e.getSource() == backButton) {
             new AdminPage();
             dispose();
         }
+    }
+
+    private boolean validateFields() {
+        String name = nameTextField.getText().trim();
+        String ageStr = ageTextField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+
+        if (!name.matches("[a-zA-Z ]+")) {
+            JOptionPane.showMessageDialog(this, "Name must contain only alphabetic characters.");
+            return false;
+        }
+
+        if (!ageStr.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Age must be a number.");
+            return false;
+        }
+
+        if (!isStrongPassword(password)) {
+            JOptionPane.showMessageDialog(this, "Password is too weak. It must be at least 8 characters long and contain a mix of upper and lower case letters, numbers, and special characters.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isStrongPassword(String password) {
+        if (password.length() < 8) return false;
+        boolean hasUpper = false, hasLower = false, hasDigit = false, hasSpecial = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) hasUpper = true;
+            if (Character.isLowerCase(c)) hasLower = true;
+            if (Character.isDigit(c)) hasDigit = true;
+            if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        return hasUpper && hasLower && hasDigit && hasSpecial;
     }
 
     private void savePatients() {

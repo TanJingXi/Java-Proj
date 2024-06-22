@@ -174,6 +174,11 @@ public class WriteMedicine extends JFrame implements ActionListener {
 
             String patientUsername = (String) tableModel.getValueAt(selectedRow, 0);
             String disease = diseaseField.getText();
+            if (!disease.matches("[a-zA-Z ]+")) {
+                JOptionPane.showMessageDialog(this, "Disease must contain only alphabetic characters.", "Invalid Disease", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             String medicine1 = medicine1Field.getText();
             String medicine2 = medicine2Field.getText();
             String medicine3 = medicine3Field.getText();

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.regex.*;
 
 public class DoctorRegistration extends UserRegistration {
     private JLabel qualificationLabel;
@@ -39,6 +40,11 @@ public class DoctorRegistration extends UserRegistration {
     @Override
     protected void registerUser() {
         String name = nameField.getText();
+        if (!name.matches("[a-zA-Z ]+")) {
+            JOptionPane.showMessageDialog(this, "Name must contain only alphabetic characters.", "Invalid Name", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         int age;
         try {
             age = Integer.parseInt(ageField.getText());
@@ -46,14 +52,25 @@ public class DoctorRegistration extends UserRegistration {
             JOptionPane.showMessageDialog(this, "Please enter a valid age.", "Invalid Age", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         String qualification = qualificationField.getText();
+        if (!qualification.matches("[a-zA-Z ]+")) {
+            JOptionPane.showMessageDialog(this, "Qualification must contain only alphabetic characters.", "Invalid Qualification", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         String gender = maleRadio.isSelected() ? "Male" : femaleRadio.isSelected() ? "Female" : null;
         if (gender == null) {
             JOptionPane.showMessageDialog(this, "Please select a gender.", "Gender Required", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         String username = userField.getText();
         String password = new String(passField.getPassword());
+        if (!isValidPassword(password)) {
+            JOptionPane.showMessageDialog(this, "Password is too weak. It must be at least 8 characters long, contain at least one digit, one uppercase letter, one lowercase letter, and one special character.", "Weak Password", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         try (PrintWriter writer = new PrintWriter(new FileWriter("Doctor.txt", true))) {
             writer.println(name + "," + age + "," + qualification + "," + gender + "," + username + "," + password);
@@ -63,6 +80,21 @@ public class DoctorRegistration extends UserRegistration {
         }
 
         clearFields();
+    }
+
+    private boolean isValidPassword(String password) {
+        if (password.length() < 8) return false;
+        boolean hasDigit = false;
+        boolean hasUpper = false;
+        boolean hasLower = false;
+        boolean hasSpecial = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) hasDigit = true;
+            else if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isLowerCase(c)) hasLower = true;
+            else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        return hasDigit && hasUpper && hasLower && hasSpecial;
     }
 
     @Override

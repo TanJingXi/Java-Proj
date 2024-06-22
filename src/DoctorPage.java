@@ -74,9 +74,4 @@ public class DoctorPage extends JFrame implements ActionListener {
             new HospitalHomepage();
         }
     }
-
-    public static void main(String[] args) {
-        // Example usage
-        new DoctorPage("JohnDoe");
-    }
 }

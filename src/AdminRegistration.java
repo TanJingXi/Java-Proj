@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.regex.*;
 
 public class AdminRegistration extends JFrame implements ActionListener {
     private JLabel nameLabel, ageLabel, usernameLabel, passwordLabel;
@@ -98,6 +99,11 @@ public class AdminRegistration extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == registerButton) {
             String name = nameTextField.getText();
+            if (!name.matches("[a-zA-Z ]+")) {
+                JOptionPane.showMessageDialog(this, "Name must contain only alphabetic characters.", "Invalid Name", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             int age;
             try {
                 age = Integer.parseInt(ageTextField.getText());
@@ -105,8 +111,13 @@ public class AdminRegistration extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Please enter a valid age.", "Invalid Age", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
             String username = usernameTextField.getText();
             String password = new String(passwordField.getPassword());
+            if (!isValidPassword(password)) {
+                JOptionPane.showMessageDialog(this, "Password is too weak. It must be at least 8 characters long, contain at least one digit, one uppercase letter, one lowercase letter, and one special character.", "Weak Password", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             // Writing admin information to file
             try (PrintWriter writer = new PrintWriter(new FileWriter("Admin.txt", true))) {
@@ -125,6 +136,21 @@ public class AdminRegistration extends JFrame implements ActionListener {
             new HospitalHomepage();
             dispose();
         }
+    }
+
+    private boolean isValidPassword(String password) {
+        if (password.length() < 8) return false;
+        boolean hasDigit = false;
+        boolean hasUpper = false;
+        boolean hasLower = false;
+        boolean hasSpecial = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) hasDigit = true;
+            else if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isLowerCase(c)) hasLower = true;
+            else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        return hasDigit && hasUpper && hasLower && hasSpecial;
     }
 
     public static void main(String[] args) {

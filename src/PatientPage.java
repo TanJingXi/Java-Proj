@@ -99,9 +99,4 @@ public class PatientPage extends JFrame implements ActionListener {
             dispose();
         }
     }
-
-    public static void main(String[] args) {
-        // Example usage
-        new PatientPage("JohnDoe");
-    }
 }

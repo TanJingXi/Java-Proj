@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.regex.*;
 
 public class PatientRegistration extends UserRegistration {
     private JLabel bgLabel;
@@ -40,6 +41,11 @@ public class PatientRegistration extends UserRegistration {
     @Override
     protected void registerUser() {
         String name = nameField.getText();
+        if (!name.matches("[a-zA-Z ]+")) {
+            JOptionPane.showMessageDialog(this, "Name must contain only alphabetic characters.", "Invalid Name", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         int age;
         try {
             age = Integer.parseInt(ageField.getText());
@@ -47,14 +53,20 @@ public class PatientRegistration extends UserRegistration {
             JOptionPane.showMessageDialog(this, "Please enter a valid age.", "Invalid Age", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         String bg = (String) bgComboBox.getSelectedItem();
         String gender = maleRadio.isSelected() ? "Male" : femaleRadio.isSelected() ? "Female" : null;
         if (gender == null) {
             JOptionPane.showMessageDialog(this, "Please select a gender.", "No Gender Selected", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         String username = userField.getText();
         String password = new String(passField.getPassword());
+        if (!isValidPassword(password)) {
+            JOptionPane.showMessageDialog(this, "Password is too weak. It must be at least 8 characters long, contain at least one digit, one uppercase letter, one lowercase letter, and one special character.", "Weak Password", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         try (PrintWriter writer = new PrintWriter(new FileWriter("Patient.txt", true))) {
             writer.println(name + "," + age + "," + bg + "," + gender + "," + username + "," + password);
@@ -64,6 +76,21 @@ public class PatientRegistration extends UserRegistration {
         }
 
         clearFields();
+    }
+
+    private boolean isValidPassword(String password) {
+        if (password.length() < 8) return false;
+        boolean hasDigit = false;
+        boolean hasUpper = false;
+        boolean hasLower = false;
+        boolean hasSpecial = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) hasDigit = true;
+            else if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isLowerCase(c)) hasLower = true;
+            else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        return hasDigit && hasUpper && hasLower && hasSpecial;
     }
 
     @Override
