@@ -205,5 +205,3 @@ public class WriteMedicine extends JFrame implements ActionListener {
         new WriteMedicine("doctorUsername");
     }
 }
-
-
