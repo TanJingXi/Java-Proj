@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.HashSet;
 import java.util.regex.*;
 
 public class AdminRegistration extends JFrame implements ActionListener {
@@ -119,6 +120,12 @@ public class AdminRegistration extends JFrame implements ActionListener {
                 return;
             }
 
+            // Checking for duplicate username
+            if (isUsernameTaken(username)) {
+                JOptionPane.showMessageDialog(this, "Username already taken. Please choose another one.", "Duplicate Username", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Writing admin information to file
             try (PrintWriter writer = new PrintWriter(new FileWriter("Admin.txt", true))) {
                 writer.println(name + "," + age + "," + username + "," + password);
@@ -151,6 +158,21 @@ public class AdminRegistration extends JFrame implements ActionListener {
             else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
         }
         return hasDigit && hasUpper && hasLower && hasSpecial;
+    }
+
+    private boolean isUsernameTaken(String username) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Admin.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length > 2 && parts[2].equals(username)) {
+                    return true;
+                }
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error reading from file: " + ex.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
     }
 
     public static void main(String[] args) {

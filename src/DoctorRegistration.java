@@ -66,6 +66,11 @@ public class DoctorRegistration extends UserRegistration {
         }
 
         String username = userField.getText();
+        if (isUsernameTaken(username, "Doctor.txt")) {
+            JOptionPane.showMessageDialog(this, "Username is already taken. Please choose another one.", "Username Taken", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         String password = new String(passField.getPassword());
         if (!isValidPassword(password)) {
             JOptionPane.showMessageDialog(this, "Password is too weak. It must be at least 8 characters long, contain at least one digit, one uppercase letter, one lowercase letter, and one special character.", "Weak Password", JOptionPane.ERROR_MESSAGE);
@@ -80,6 +85,21 @@ public class DoctorRegistration extends UserRegistration {
         }
 
         clearFields();
+    }
+
+    private boolean isUsernameTaken(String username, String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts[4].equals(username)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private boolean isValidPassword(String password) {
